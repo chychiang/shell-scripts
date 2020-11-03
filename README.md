@@ -104,6 +104,20 @@ cut -w -f1,2,3,5
 tr -s " "   # normalize any whitespace to one single space
 ```
 
+## [sysctl](https://www.freebsd.org/cgi/man.cgi?query=sysctl&sektion=8&manpath=FreeBSD+12.2-RELEASE+and+Ports)
+Retrives the kernel state, often used to get useful info about the system.
+```bash
+sysctl kern.hostname  # get hostname of the kernel
+sysctl hw.physmem   # get amount of phsical memory of the machine
+```
+
+## [ps](https://www.freebsd.org/cgi/man.cgi?query=ps&sektion=1&manpath=FreeBSD+12.2-RELEASE+and+Ports)
+```bash
+ps -o user,pid,ppid,stat,%cpu,%mem -p <PID>
+# -o    specify what keywords (fields) to display
+# -p    specify the PID to display info
+```
+
 ## Misc
 ### chage the text color 
 Useful for highlighting output. Always reset the color after stdout.
@@ -119,7 +133,6 @@ Can be used inside awk
 ```bash
 ${arr[@]} 
 ```
-bc -l
 
 ### transpose whitespace delimitered table
 ```bash
@@ -143,22 +156,52 @@ date
 1>&2
 ```
 
+### Calculate float point numbers
+Bash does not support calculation of float point numbers.
+For instance, 5/4 will result in 0.  
+[`bc`](https://www.freebsd.org/cgi/man.cgi?query=bc&sektion=1) is an useful tool when dealing with arithmetics of float point numbers.
+```bash
+# converting bytes into gigabytes
 echo "scale=2; $PHYSMEM/1024/1024/1024" | bc -l
 
-sysctl -n kern.hostname
+# scale=2;  tells bc to only display 2 digits of decimals
+# bc -l     allows specification of precision
+```
 
-ps -o user,pid,ppid,stat,%cpu,%mem -p
-
-sockstat -4 -l -q
-
-last
-
+### Count how many times values occured
+```bash
 sort | uniq -c 
+# always sort before uniq, as uniq only counts neighboring repeating values
+# -c    count occurance of unique values
+```
 
-trap ctrl_c SIGINT
+## [sockstat](https://www.freebsd.org/cgi/man.cgi?query=sockstat&sektion=1&manpath=FreeBSD+12.2-RELEASE+and+Ports)
+Lists open sockets
+```bash
+sockstat -4 -l -q
+# -4    show only IPv4 sockets
+# -l    show listening sockets
+# -q    don't print header line, useful when piping
+```
+
+## [last](https://www.freebsd.org/cgi/man.cgi?query=last&sektion=1&manpath=FreeBSD+12.2-RELEASE+and+Ports)
+Indicate last logins of users and ttys
+```bash
+last -d # to specify a snapshot date / time
+last | awk -v month="$THIS_MONTH" '$0 ~ month {print$1}' # print the data of current month
+```
+
+## Trapping signals (Ctrl+C)
+```bash
+trap ctrl_c SIGINT  # SIGINT = Ctrl+C in FreeBSD
 ctrl_c(){
-    echo "Ctrl+C pressed.">&1
-    return 2
+    echo "Ctrl+C pressed.">&1   # echo to stdout
+    return 2    # stop the function / program w/ an error code
 }
+```
 
-#/bin/bash
+## Shebang
+Put this at the beginning of a `.sh` file to specify what shell the script should be executed with.
+```bash
+#!/bin/bash     # use bash to execute the following
+```
