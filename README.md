@@ -3,6 +3,19 @@ Collection of useful shell scripts.
 All the scripts within this document is tested to be compatible with `bash` that comes w/ FreeBSD.  
 YMMV on other OS. 
 
+## pure-ftpd related
+### Managing Virtual Users
+The server never reads ```/etc/pureftpd.passw``` ddirectly. Instead, it reads ```/etc/pureftpd.pdb``` (or whatever file name you gave after -lpuredb:...) .
+
+This file is a copy of ```/etc/pureftpd.passwd```, but in a binary format,
+optimized for fast lookups.
+
+After having made a manual change to /etc/pureftpd.passwd, you must rebuild
+```/etc/pureftpd.pdb``` with ```pure-pw mkdb```
+
+If you add/delete/modify user accounts with ```pure-pw useradd/usermod/userdel/passwd```, don't forget the ```-m``` option to automatically rebuild ```/etc/pureftpd.pdb``` and not only update ```/etc/pureftpd.passwd```
+
+
 ## dialog
 ### User interaction of the dialog interface
 Specifies what happens when the user press on the navigation buttons on the bottom of the dialog.
