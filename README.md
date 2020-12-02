@@ -3,6 +3,11 @@ Collection of useful shell scripts.
 All the scripts within this document is tested to be compatible with `bash` that comes w/ FreeBSD.  
 YMMV on other OS. 
 
+## incase of single user mode and have to write files
+```bash
+mount -u -o rw <mount_point>
+```
+
 ## pure-ftpd related
 ### Managing Virtual Users
 The server never reads ```/etc/pureftpd.passw``` ddirectly. Instead, it reads ```/etc/pureftpd.pdb``` (or whatever file name you gave after -lpuredb:...) .
@@ -15,6 +20,24 @@ After having made a manual change to /etc/pureftpd.passwd, you must rebuild
 
 If you add/delete/modify user accounts with ```pure-pw useradd/usermod/userdel/passwd```, don't forget the ```-m``` option to automatically rebuild ```/etc/pureftpd.pdb``` and not only update ```/etc/pureftpd.passwd```
 
+## zfs and zpool
+### Creating a zpool from hard-drive
+```bash
+geom disk list # to get the name of the disks
+zpool create mypool mirror /dev/ada1 /dev/ada2  # create a zpool named "mypool" w/ 2 mirroring drives
+zpool status # to check the pool is created sucessfully
+
+# to mount mypool to a specific directory
+zfs set mountpoint=/<insert-specific-dir> mypool
+
+# create a dataset from the pool (think subdirectory)
+zfs create mypool/<sub-directory-name>
+zfs set compression=lz4 atime=off mypool/<sub-directory-name>
+
+# check if setting is correct
+zfs set compression=lz4 mypool/<dir>
+zfs get -r compression mypool
+```
 
 ## dialog
 ### User interaction of the dialog interface
