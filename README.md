@@ -241,3 +241,10 @@ Put this at the beginning of a `.sh` file to specify what shell the script shoul
 ```bash
 #!/bin/bash     # use bash to execute the following
 ```
+
+## cURL
+To test if your server is using http2
+```bash
+curl -sI 127.0.0.1:80 # HEAD request
+curl -k 127.0.0.1 # to use self-signed cert
+```
