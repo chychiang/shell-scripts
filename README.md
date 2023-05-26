@@ -3,6 +3,12 @@ Collection of useful shell scripts.
 All the scripts within this document is tested to be compatible with `bash` that comes w/ FreeBSD.  
 YMMV on other OS. 
 
+## Uname
+
+```bash
+uname -r # check kernel version
+```
+
 ## incase of single user mode and have to write files
 ```bash
 mount -u -o rw <mount_point>
